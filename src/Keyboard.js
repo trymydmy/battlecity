@@ -73,13 +73,17 @@ Keyboard.prototype._listen = function () {
       });
     }
   });
+
+  // Если хотим вообще заблокировать скролл при движении пальцем на кнопке:
+  $(document).on('touchmove', '.touch-button', function(e) {
+    e.preventDefault();
+  });
 };
 
-// Преобразуем 'arrows', 'space', 'enter', 'ctrl' и т.д. в конкретные keyCode
 Keyboard.prototype._actionToKeyCode = function (action) {
   switch (action) {
     case 'arrows':
-      // Допустим, одним тапом на D-Pad мы хотим ехать вверх
+      // Для примера будем отправлять код UP
       return Keyboard.Key.UP;
     case 'space':
       return Keyboard.Key.SPACE;

@@ -3,16 +3,15 @@ function Keyboard(eventManager) {
   this._events = [];
   this._keys = {};
 
-  // Для виртуального джойстика
-  this._joystickActive = false;
-  this._joystickStartX = 0;
-  this._joystickStartY = 0;
-  this._joystickLastDirection = null;
-
+  // Поля для джойстика:
+  this._dpadActive = false;      // Активен ли D-Pad
+  this._dpadCenter = { x: 0, y: 0 };  // Центр нажатия
+  this._dpadLastDir = null;      // Последнее направление
+  this._DPAD_DEADZONE = 10;      // Мёртвая зона
   this._listen();
 }
 
-// Наши коды клавиш
+// Коды клавиш
 Keyboard.Key = {
   LEFT: 37,
   UP: 38,
@@ -20,141 +19,118 @@ Keyboard.Key = {
   DOWN: 40,
   SPACE: 32,
   SELECT: 17,
-  START: 13
+  START: 13,
+  CTRL: 17
 };
 
-// События
+// Имена событий
 Keyboard.Event = {
   KEY_PRESSED: 'Keyboard.Event.KEY_PRESSED',
   KEY_RELEASED: 'Keyboard.Event.KEY_RELEASED'
 };
 
-// Радиус "мёртвой зоны" (насколько далеко должен отойти палец, чтобы двинуться)
-Keyboard.JOYSTICK_DEADZONE = 10;
-
-Keyboard.prototype._listen = function () {
+Keyboard.prototype._listen = function() {
   var self = this;
-
-  // 1) Клавиатура
-  $(document).keydown(function (event) {
-    if (!self._keys[event.which]) {
-      self._keys[event.which] = true;
-      self._events.push({
-        name: Keyboard.Event.KEY_PRESSED,
-        key: event.which
-      });
+  // Ловим клавиатуру
+  $(document).keydown(function(e) {
+    if (!self._keys[e.which]) {
+      self._keys[e.which] = true;
+      self._events.push({ name: Keyboard.Event.KEY_PRESSED, key: e.which });
     }
-    event.preventDefault();
+    e.preventDefault();
   });
-
-  $(document).keyup(function (event) {
-    if (self._keys[event.which]) {
-      self._keys[event.which] = false;
-      self._events.push({
-        name: Keyboard.Event.KEY_RELEASED,
-        key: event.which
-      });
+  $(document).keyup(function(e) {
+    if (self._keys[e.which]) {
+      self._keys[e.which] = false;
+      self._events.push({ name: Keyboard.Event.KEY_RELEASED, key: e.which });
     }
-    event.preventDefault();
-  });
-
-  // 2) Виртуальный джойстик на #joystickArea
-  // (Предполагаем, что у тебя в HTML есть <div id="joystickArea"></div>)
-  $(document).on('touchstart pointerdown mousedown', '#joystickArea', function(e) {
     e.preventDefault();
-    self._onJoystickStart(e);
-  });
-  $(document).on('touchmove pointermove mousemove', '#joystickArea', function(e) {
-    e.preventDefault();
-    self._onJoystickMove(e);
-  });
-  $(document).on('touchend pointerup mouseup', '#joystickArea', function(e) {
-    e.preventDefault();
-    self._onJoystickEnd(e);
   });
 };
 
-Keyboard.prototype._onJoystickStart = function(e) {
-  // Запоминаем, что джойстик «активен»
-  this._joystickActive = true;
-
-  // Координаты тапа – это «центр», от которого будем считать смещение
-  var pos = this._getEventPosition(e);
-  this._joystickStartX = pos.x;
-  this._joystickStartY = pos.y;
-
-  // Пока направления нет
-  this._joystickLastDirection = null;
-};
-
-Keyboard.prototype._onJoystickMove = function(e) {
-  // Если палец/курсор вообще не нажат – игнорируем
-  if (!this._joystickActive) {
-    return;
-  }
-
-  // Получаем текущие координаты
-  var pos = this._getEventPosition(e);
-  var dx = pos.x - this._joystickStartX;
-  var dy = pos.y - this._joystickStartY;
-
-  // Проверяем, не внутри ли мёртвой зоны (никакого движения)
-  var distance = Math.sqrt(dx*dx + dy*dy);
-  if (distance < Keyboard.JOYSTICK_DEADZONE) {
-    // Пользователь внутри deadzone => никакого направления
-    this._updateJoystickDirection(null);
-    return;
-  }
-
-  // Определяем основную ось (горизонт / вертикаль)
-  if (Math.abs(dx) > Math.abs(dy)) {
-    // Горизонталь
-    if (dx > 0) {
-      this._updateJoystickDirection('right');
-    } else {
-      this._updateJoystickDirection('left');
-    }
-  } else {
-    // Вертикаль
-    if (dy > 0) {
-      this._updateJoystickDirection('down');
-    } else {
-      this._updateJoystickDirection('up');
-    }
+/**
+ * Обработка нажатия/отжатия кнопок A/B/Start/Select (не D-Pad).
+ */
+Keyboard.prototype.onButtonDown = function(action) {
+  var keyCode = this._actionToKeyCode(action);
+  if (keyCode && !this._keys[keyCode]) {
+    this._keys[keyCode] = true;
+    this._events.push({
+      name: Keyboard.Event.KEY_PRESSED,
+      key: keyCode
+    });
   }
 };
-
-Keyboard.prototype._onJoystickEnd = function(e) {
-  // Палец/мышь отжали
-  this._joystickActive = false;
-  // Отпускаем текущее направление, если было
-  this._updateJoystickDirection(null);
-};
-
-// Сопоставим строку 'up','down','left','right' => реальный keyCode
-Keyboard.prototype._directionToKeyCode = function(dir) {
-  switch (dir) {
-    case 'left':  return Keyboard.Key.LEFT;
-    case 'right': return Keyboard.Key.RIGHT;
-    case 'up':    return Keyboard.Key.UP;
-    case 'down':  return Keyboard.Key.DOWN;
-    default:      return null;
+Keyboard.prototype.onButtonUp = function(action) {
+  var keyCode = this._actionToKeyCode(action);
+  if (keyCode && this._keys[keyCode]) {
+    this._keys[keyCode] = false;
+    this._events.push({
+      name: Keyboard.Event.KEY_RELEASED,
+      key: keyCode
+    });
   }
 };
 
 /**
- * Обновляет направление (если новое направление != старое),
- * пушит соответствующие KEY_PRESSED/KEY_RELEASED.
+ * D-Pad: pointerdown/touchstart => запоминаем "центр" и включаем режим.
  */
-Keyboard.prototype._updateJoystickDirection = function(newDir) {
-  // Если направление не поменялось – ничего не делаем
-  if (newDir === this._joystickLastDirection) {
+Keyboard.prototype.onDpadPointerDown = function(e, $el) {
+  this._dpadActive = true;
+  this._dpadLastDir = null;
+
+  // Считаем точку нажатия "центром"
+  var pos = this._getPointerPos(e);
+  this._dpadCenter.x = pos.x;
+  this._dpadCenter.y = pos.y;
+};
+
+/**
+ * D-Pad: pointermove/touchmove => вычисляем смещение и направление.
+ */
+Keyboard.prototype.onDpadPointerMove = function(e, $el) {
+  if (!this._dpadActive) return;
+
+  var pos = this._getPointerPos(e);
+  var dx = pos.x - this._dpadCenter.x;
+  var dy = pos.y - this._dpadCenter.y;
+
+  var dist = Math.sqrt(dx * dx + dy * dy);
+  // Если в мёртвой зоне – отпускаем направление
+  if (dist < this._DPAD_DEADZONE) {
+    this._updateDpadDir(null);
     return;
   }
 
-  // 1) Если было предыдущее направление, надо отправить KEY_RELEASED
-  if (this._joystickLastDirection) {
-    var oldKey = this._directionToKeyCode(this._joystickLastDirection);
+  // Определяем основную ось:
+  if (Math.abs(dx) > Math.abs(dy)) {
+    // Горизонталь
+    this._updateDpadDir(dx > 0 ? 'right' : 'left');
+  } else {
+    // Вертикаль
+    this._updateDpadDir(dy > 0 ? 'down' : 'up');
+  }
+};
+
+/**
+ * D-Pad: pointerup/touchend => отпускаем направление
+ */
+Keyboard.prototype.onDpadPointerUp = function(e, $el) {
+  this._dpadActive = false;
+  this._updateDpadDir(null);
+};
+
+/**
+ * Превращаем направления up/down/left/right -> keyCode.
+ * Если null, значит отпустить.
+ */
+Keyboard.prototype._updateDpadDir = function(newDir) {
+  // Если не поменялось – выходим
+  if (newDir === this._dpadLastDir) return;
+
+  // 1) Отпускаем старый
+  if (this._dpadLastDir) {
+    var oldKey = this._dirToKeyCode(this._dpadLastDir);
     if (oldKey && this._keys[oldKey]) {
       this._keys[oldKey] = false;
       this._events.push({
@@ -164,9 +140,9 @@ Keyboard.prototype._updateJoystickDirection = function(newDir) {
     }
   }
 
-  // 2) Если есть новое направление, отправим KEY_PRESSED
+  // 2) Нажимаем новый
   if (newDir) {
-    var newKey = this._directionToKeyCode(newDir);
+    var newKey = this._dirToKeyCode(newDir);
     if (newKey && !this._keys[newKey]) {
       this._keys[newKey] = true;
       this._events.push({
@@ -176,41 +152,53 @@ Keyboard.prototype._updateJoystickDirection = function(newDir) {
     }
   }
 
-  // 3) Запоминаем текущее направление
-  this._joystickLastDirection = newDir;
+  this._dpadLastDir = newDir;
 };
 
-/**
- * Получаем координаты тапа/клика.
- */
-Keyboard.prototype._getEventPosition = function(e) {
-  // Если тач
-  if (e.originalEvent.touches && e.originalEvent.touches.length) {
-    return {
-      x: e.originalEvent.touches[0].pageX,
-      y: e.originalEvent.touches[0].pageY
-    };
-  } else if (e.originalEvent.pointerId) {
-    // Pointer Events
-    return {
-      x: e.originalEvent.pageX,
-      y: e.originalEvent.pageY
-    };
-  } else {
-    // Мышь
-    return {
-      x: e.pageX,
-      y: e.pageY
-    };
+Keyboard.prototype._dirToKeyCode = function(dir) {
+  switch (dir) {
+    case 'up': return Keyboard.Key.UP;
+    case 'down': return Keyboard.Key.DOWN;
+    case 'left': return Keyboard.Key.LEFT;
+    case 'right': return Keyboard.Key.RIGHT;
+    default: return null;
   }
 };
 
-Keyboard.prototype.fireEvents = function () {
-  // Отправляем накопленные события
-  this._events.forEach(function (evt) {
-    this._eventManager.fireEvent(evt);
-  }, this);
+/**
+ * Преобразуем 'space','enter','ctrl' и т.п. -> keyCode
+ */
+Keyboard.prototype._actionToKeyCode = function(action) {
+  switch (action) {
+    case 'space': return Keyboard.Key.SPACE;
+    case 'enter': return Keyboard.Key.START;
+    case 'ctrl':  return Keyboard.Key.CTRL;
+    default:      return null;
+  }
+};
 
-  // Очищаем
+/**
+ * Получаем координаты pointer/touch в едином формате.
+ */
+Keyboard.prototype._getPointerPos = function(e) {
+  // Если touch
+  if (e.originalEvent && e.originalEvent.touches && e.originalEvent.touches.length) {
+    return {
+      x: e.originalEvent.touches[0].clientX,
+      y: e.originalEvent.touches[0].clientY
+    };
+  }
+  // Pointer / Mouse
+  return {
+    x: e.clientX,
+    y: e.clientY
+  };
+};
+
+Keyboard.prototype.fireEvents = function() {
+  // Отправляем все накопленные события
+  for (var i = 0; i < this._events.length; i++) {
+    this._eventManager.fireEvent(this._events[i]);
+  }
   this._events = [];
 };

@@ -2,9 +2,8 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Battle City</title>
-  
-  <link rel="stylesheet" type="text/css" href="css/BattleCity.css" />
   
   <script type="text/javascript" src="lib/jquery-1.7.2.js"></script>
 
@@ -79,7 +78,6 @@
   <script type="text/javascript" src="src/Level.js"></script>
   <script type="text/javascript" src="src/EnemyFactoryView.js"></script>
   <script type="text/javascript" src="src/LivesView.js"></script>
-  <script type="text/javascript" src="src/MainMenuView.js"></script>
   <script type="text/javascript" src="src/Curtain.js"></script>
   <script type="text/javascript" src="src/Script.js"></script>
   <script type="text/javascript" src="src/Delay.js"></script>
@@ -95,15 +93,58 @@
   <script type="text/javascript" src="src/Trees.js"></script>
   <script type="text/javascript" src="src/Water.js"></script>
   <script type="text/javascript" src="src/LoadingScene.js"></script>
-  
+
   <script type="text/javascript" src="lib/Stats.js"></script>
   <script type="text/javascript" src="src/FPSCounter.js"></script>
   
   <script type="text/javascript" src="src/ImageManager.js"></script>
   <script type="text/javascript" src="src/Construction.js"></script>
   <script type="text/javascript" src="src/SpriteSerializerController.js"></script>
-  <script type="text/javascript" src="src/SpriteSerializer.js"></script>
   <script type="text/javascript" src="src/SoundManager.js"></script>
+
+  <style>
+    @font-face {
+      font-family: prstart;
+      src: url('../fonts/prstart.ttf');
+    }
+    body {
+      font-family: prstart;
+      font-size: 16px;
+      background-color: black;
+      margin-top: 30px;
+    }
+    /* Центрируем блок, но даём ему max-width, чтобы он мог ужаться */
+    #main {
+      margin: 0 auto;
+      width: 512px; 
+      max-width: 90%;
+      color: white;
+    }
+    #help {
+      border-top: 4px solid white;
+      margin-top: 10px;
+      padding-top: 7px;
+    }
+    /* Центрируем таблицу */
+    #help table {
+      margin: 0 auto;
+    }
+    #help img {
+      vertical-align: middle;
+      /* Можно добавить, чтобы картинки тоже подстраивались */
+      max-width: 100%;
+      height: auto;
+    }
+    #help td {
+      padding-left: 1em;
+    }
+    /* Масштабируем канву пропорционально */
+    #main canvas {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  </style>
 
   <script type="text/javascript">
     $(function () {
@@ -111,7 +152,7 @@
       
       var CANVAS_ID = 'canvas';
       var ctx = createCanvasContext();
-      ctx.font = "16px prstart"
+      ctx.font = "16px prstart";
       
       var eventManager = new EventManager();
       var keyboard = new Keyboard(eventManager);
@@ -130,31 +171,55 @@
         $('<canvas id="' + CANVAS_ID + '" width="' + Globals.CANVAS_WIDTH + '" height="' + Globals.CANVAS_HEIGHT + '"></canvas>').prependTo('#main');
         var canvas = document.getElementById(CANVAS_ID);
         return canvas.getContext('2d');
-      };
+      }
+
+      // Пример: Можно вешать тач-события на «touch-button»
+      $(document).on('touchstart mousedown pointerdown', '.touch-button', function(e) {
+        e.preventDefault();
+        var action = $(this).data('action');
+        console.log('Touch/Mouse down on: ', action);
+      });
+      $(document).on('touchend mouseup pointerup', '.touch-button', function(e) {
+        e.preventDefault();
+        var action = $(this).data('action');
+        console.log('Touch/Mouse up on: ', action);
+      });
     });
   </script>
-
 </head>
-
 <body>
   <div id="main">
     <div id="help">
       <p>CONTROLS:</p>
       <table>
         <tr>
-          <td><img src="images/Nintendo-Dpad-Neutral.png" alt="" /></td>
+          <td>
+            <img src="images/Nintendo-Dpad-Neutral.png" alt="" 
+                 class="touch-button" data-action="arrows" />
+          </td>
           <td>ARROWS</td>
         </tr>
         <tr>
-          <td><img src="images/Nintendo-Button-A.png" alt="" />,<img src="images/Nintendo-Button-B.png" alt="" /></td>
+          <td>
+            <img src="images/Nintendo-Button-A.png" alt="" 
+                 class="touch-button" data-action="space" />
+            <img src="images/Nintendo-Button-B.png" alt="" 
+                 class="touch-button" data-action="space" />
+          </td>
           <td>SPACE</td>
         </tr>
         <tr>
-          <td><img src="images/Nintendo-Button-Start.png" alt="" /></td>
+          <td>
+            <img src="images/Nintendo-Button-Start.png" alt="" 
+                 class="touch-button" data-action="enter" />
+          </td>
           <td>ENTER</td>
         </tr>
         <tr>
-          <td><img src="images/Nintendo-Button-Select.png" alt="" /></td>
+          <td>
+            <img src="images/Nintendo-Button-Select.png" alt="" 
+                 class="touch-button" data-action="ctrl" />
+          </td>
           <td>CTRL</td>
         </tr>
       </table>

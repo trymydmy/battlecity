@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Jasmine Spec Runner</title>
+
+  <link rel="shortcut icon" type="image/png" href="lib/jasmine-1.2.0/jasmine_favicon.png">
+  <link rel="stylesheet" type="text/css" href="lib/jasmine-1.2.0/jasmine.css">
+  <script type="text/javascript" src="lib/jasmine-1.2.0/jasmine.js"></script>
+  <script type="text/javascript" src="lib/jasmine-1.2.0/jasmine-html.js"></script>
+
+  <!-- spec files -->
+  <script type="text/javascript" src="spec/TankSpec.js"></script>
+  <script type="text/javascript" src="spec/PointSpec.js"></script>
+  <script type="text/javascript" src="spec/RectSpec.js"></script>
+  <script type="text/javascript" src="spec/CollisionDetectorSpec.js"></script>
+  <script type="text/javascript" src="spec/EventManagerSpec.js"></script>
+  <script type="text/javascript" src="spec/SpriteControllerSpec.js"></script>
+  <script type="text/javascript" src="spec/TankControllerSpec.js"></script>
+  <script type="text/javascript" src="spec/BulletFactorySpec.js"></script>
+  <script type="text/javascript" src="spec/SpriteSpec.js"></script>
+  <script type="text/javascript" src="spec/BulletSpec.js"></script>
+  <script type="text/javascript" src="spec/UtilsSpec.js"></script>
+  <script type="text/javascript" src="spec/PainterSpec.js"></script>
+  <script type="text/javascript" src="spec/SpriteContainerSpec.js"></script>
+  <script type="text/javascript" src="spec/UpdaterSpec.js"></script>
+  <script type="text/javascript" src="spec/BulletExplosionFactorySpec.js"></script>
+  <script type="text/javascript" src="spec/ExplosionSpec.js"></script>
+  <script type="text/javascript" src="spec/WallSpec.js"></script>
+  <script type="text/javascript" src="spec/BrickWallSpec.js"></script>
+  <script type="text/javascript" src="spec/CursorSpec.js"></script>
+  <script type="text/javascript" src="spec/CursorControllerSpec.js"></script>
+  <script type="text/javascript" src="spec/BuilderSpec.js"></script>
+  <script type="text/javascript" src="spec/StructureManagerSpec.js"></script>
+  <script type="text/javascript" src="spec/SpriteSerializerSpec.js"></script>
+  <script type="text/javascript" src="spec/SteelWallSpec.js"></script>
+  <script type="text/javascript" src="spec/BaseSpec.js"></script>
+  <script type="text/javascript" src="spec/TankStateAppearingSpec.js"></script>
+  <script type="text/javascript" src="spec/TankStateNormalSpec.js"></script>
+  <script type="text/javascript" src="spec/TankStateInvincibleSpec.js"></script>
+  <script type="text/javascript" src="spec/AITankControllerSpec.js"></script>
+  <script type="text/javascript" src="spec/RandomSpec.js"></script>
+  <script type="text/javascript" src="spec/AITankControllerFactorySpec.js"></script>
+  <script type="text/javascript" src="spec/AITankControllerContainerSpec.js"></script>
+  <script type="text/javascript" src="spec/EnemyFactorySpec.js"></script>
+  <script type="text/javascript" src="spec/AnimationSpec.js"></script>
+  <script type="text/javascript" src="spec/TankExplosionFactorySpec.js"></script>
+  <script type="text/javascript" src="spec/TankExplosionSpec.js"></script>
+  <script type="text/javascript" src="spec/PointsFactorySpec.js"></script>
+  <script type="text/javascript" src="spec/PointsSpec.js"></script>
+  <script type="text/javascript" src="spec/PlayerTankFactorySpec.js"></script>
+  <script type="text/javascript" src="spec/PlayerTankControllerFactorySpec.js"></script>
+  <script type="text/javascript" src="spec/PowerUpFactorySpec.js"></script>
+  <script type="text/javascript" src="spec/PowerUpSpec.js"></script>
+  <script type="text/javascript" src="spec/PowerUpHandlerSpec.js"></script>
+  <script type="text/javascript" src="spec/FreezeTimerSpec.js"></script>
+  <script type="text/javascript" src="spec/BaseWallBuilderSpec.js"></script>
+  <script type="text/javascript" src="spec/ShovelHandlerSpec.js"></script>
+  <script type="text/javascript" src="spec/PauseSpec.js"></script>
+  <script type="text/javascript" src="spec/PauseListenerSpec.js"></script>
+  <script type="text/javascript" src="spec/BaseExplosionFactorySpec.js"></script>
+  <script type="text/javascript" src="spec/BaseExplosionSpec.js"></script>
+  <script type="text/javascript" src="spec/TankColorSpec.js"></script>
+  <script type="text/javascript" src="spec/SceneManagerSpec.js"></script>
+  <script type="text/javascript" src="spec/MainMenuSceneSpec.js"></script>
+  <script type="text/javascript" src="spec/OnePlayerMenuItemSpec.js"></script>
+  <script type="text/javascript" src="spec/ConstructionMenuItemSpec.js"></script>
+  <script type="text/javascript" src="spec/MainMenuSpec.js"></script>
+  <script type="text/javascript" src="spec/MainMenuControllerSpec.js"></script>
+  <script type="text/javascript" src="spec/CurtainSpec.js"></script>
+  <script type="text/javascript" src="spec/ScriptSpec.js"></script>
+  <script type="text/javascript" src="spec/DelaySpec.js"></script>
+  <script type="text/javascript" src="spec/MoveFnSpec.js"></script>
+
+  <!-- source files -->
+  <script type="text/javascript" src="src/Utils.js"></script>
+  <script type="text/javascript" src="src/Point.js"></script>
+  <script type="text/javascript" src="src/Rect.js"></script>
+  <script type="text/javascript" src="src/Sprite.js"></script>
+  <script type="text/javascript" src="src/Tank.js"></script>
+  <script type="text/javascript" src="src/Wall.js"></script>
+  <script type="text/javascript" src="src/SpriteContainer.js"></script>
+  <script type="text/javascript" src="src/CollisionDetector.js"></script>
+  <script type="text/javascript" src="src/EventManager.js"></script>
+  <script type="text/javascript" src="src/SpriteController.js"></script>
+  <script type="text/javascript" src="src/TankController.js"></script>
+  <script type="text/javascript" src="src/Keyboard.js"></script>
+  <script type="text/javascript" src="src/BulletFactory.js"></script>
+  <script type="text/javascript" src="src/Bullet.js"></script>
+  <script type="text/javascript" src="src/Painter.js"></script>
+  <script type="text/javascript" src="src/Updater.js"></script>
+  <script type="text/javascript" src="src/BulletExplosionFactory.js"></script>
+  <script type="text/javascript" src="src/Explosion.js"></script>
+  <script type="text/javascript" src="src/BulletExplosion.js"></script>
+  <script type="text/javascript" src="src/BrickWall.js"></script>
+  <script type="text/javascript" src="src/SteelWall.js"></script>
+  <script type="text/javascript" src="src/Cursor.js"></script>
+  <script type="text/javascript" src="src/BlinkTimer.js"></script>
+  <script type="text/javascript" src="src/CursorController.js"></script>
+  <script type="text/javascript" src="src/Builder.js"></script>
+  <script type="text/javascript" src="src/StructureManager.js"></script>
+  <script type="text/javascript" src="src/BrickWallFactory.js"></script>
+  <script type="text/javascript" src="src/SteelWallFactory.js"></script>
+  <script type="text/javascript" src="src/Globals.js"></script>
+  <script type="text/javascript" src="src/SpriteSerializer.js"></script>
+  <script type="text/javascript" src="src/Base.js"></script>
+  <script type="text/javascript" src="src/TankStateAppearing.js"></script>
+  <script type="text/javascript" src="src/TankStateNormal.js"></script>
+  <script type="text/javascript" src="src/TankStateInvincible.js"></script>
+  <script type="text/javascript" src="src/AITankController.js"></script>
+  <script type="text/javascript" src="src/Random.js"></script>
+  <script type="text/javascript" src="src/AITankControllerFactory.js"></script>
+  <script type="text/javascript" src="src/AITankControllerContainer.js"></script>
+  <script type="text/javascript" src="src/EnemyFactory.js"></script>
+  <script type="text/javascript" src="src/Animation.js"></script>
+  <script type="text/javascript" src="src/TankExplosionFactory.js"></script>
+  <script type="text/javascript" src="src/TankExplosion.js"></script>
+  <script type="text/javascript" src="src/PointsFactory.js"></script>
+  <script type="text/javascript" src="src/Points.js"></script>
+  <script type="text/javascript" src="src/PlayerTankFactory.js"></script>
+  <script type="text/javascript" src="src/PlayerTankControllerFactory.js"></script>
+  <script type="text/javascript" src="src/PowerUpFactory.js"></script>
+  <script type="text/javascript" src="src/PowerUp.js"></script>
+  <script type="text/javascript" src="src/PowerUpHandler.js"></script>
+  <script type="text/javascript" src="src/FreezeTimer.js"></script>
+  <script type="text/javascript" src="src/BaseWallBuilder.js"></script>
+  <script type="text/javascript" src="src/ShovelHandler.js"></script>
+  <script type="text/javascript" src="src/Pause.js"></script>
+  <script type="text/javascript" src="src/PauseListener.js"></script>
+  <script type="text/javascript" src="src/BaseExplosionFactory.js"></script>
+  <script type="text/javascript" src="src/BaseExplosion.js"></script>
+  <script type="text/javascript" src="src/TankColor.js"></script>
+  <script type="text/javascript" src="src/SceneManager.js"></script>
+  <script type="text/javascript" src="src/MainMenuScene.js"></script>
+  <script type="text/javascript" src="src/MainMenuItem.js"></script>
+  <script type="text/javascript" src="src/OnePlayerMenuItem.js"></script>
+  <script type="text/javascript" src="src/ConstructionMenuItem.js"></script>
+  <script type="text/javascript" src="src/MainMenu.js"></script>
+  <script type="text/javascript" src="src/MainMenuController.js"></script>
+  <script type="text/javascript" src="src/MainMenuView.js"></script>
+  <script type="text/javascript" src="src/MainMenuCursor.js"></script>
+  <script type="text/javascript" src="src/MainMenuCursorView.js"></script>
+  <script type="text/javascript" src="src/Gamefield.js"></script>
+  <script type="text/javascript" src="src/Level.js"></script>
+  <script type="text/javascript" src="src/EnemyFactoryView.js"></script>
+  <script type="text/javascript" src="src/LivesView.js"></script>
+  <script type="text/javascript" src="src/MainMenuView.js"></script>
+  <script type="text/javascript" src="src/Curtain.js"></script>
+  <script type="text/javascript" src="src/Script.js"></script>
+  <script type="text/javascript" src="src/Delay.js"></script>
+  <script type="text/javascript" src="src/MoveFn.js"></script>
+  <script type="text/javascript" src="src/Trees.js"></script>
+  <script type="text/javascript" src="src/Water.js"></script>
+  
+  <script type="text/javascript">
+    var SoundManager = (function() {
+      return {
+        play: function () {}
+      };
+    })();
+  </script>
+
+  <script type="text/javascript">
+    (function() {
+      var jasmineEnv = jasmine.getEnv();
+      jasmineEnv.updateInterval = 1000;
+
+      var htmlReporter = new jasmine.HtmlReporter();
+
+      jasmineEnv.addReporter(htmlReporter);
+
+      jasmineEnv.specFilter = function(spec) {
+        return htmlReporter.specFilter(spec);
+      };
+
+      var currentWindowOnload = window.onload;
+
+      window.onload = function() {
+        if (currentWindowOnload) {
+          currentWindowOnload();
+        }
+        execJasmine();
+      };
+
+      function execJasmine() {
+        jasmineEnv.execute();
+      }
+
+    })();
+  </script>
+
+</head>
+
+<body>
+</body>
+</html>

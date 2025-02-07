@@ -21,20 +21,75 @@ Keyboard.Event.KEY_RELEASED = 'Keyboard.Event.KEY_RELEASED';
 
 Keyboard.prototype._listen = function () {
   var self = this;
+
+  // Слушаем клавиатуру
   $(document).keydown(function (event) {
     if (!self._keys[event.which]) {
       self._keys[event.which] = true;
-      self._events.push({name: Keyboard.Event.KEY_PRESSED, key: event.which});
+      self._events.push({
+        name: Keyboard.Event.KEY_PRESSED,
+        key: event.which
+      });
     }
     event.preventDefault();
   });
+
   $(document).keyup(function (event) {
     if (self._keys[event.which]) {
       self._keys[event.which] = false;
-      self._events.push({name: Keyboard.Event.KEY_RELEASED, key: event.which});
+      self._events.push({
+        name: Keyboard.Event.KEY_RELEASED,
+        key: event.which
+      });
     }
     event.preventDefault();
   });
+
+  // Слушаем тач/мышь на кнопках
+  $(document).on('touchstart mousedown pointerdown', '.touch-button', function(e) {
+    e.preventDefault();
+    var action = $(this).data('action');
+    var keyCode = self._actionToKeyCode(action);
+
+    if (keyCode !== null && !self._keys[keyCode]) {
+      self._keys[keyCode] = true;
+      self._events.push({
+        name: Keyboard.Event.KEY_PRESSED,
+        key: keyCode
+      });
+    }
+  });
+
+  $(document).on('touchend mouseup pointerup', '.touch-button', function(e) {
+    e.preventDefault();
+    var action = $(this).data('action');
+    var keyCode = self._actionToKeyCode(action);
+
+    if (keyCode !== null && self._keys[keyCode]) {
+      self._keys[keyCode] = false;
+      self._events.push({
+        name: Keyboard.Event.KEY_RELEASED,
+        key: keyCode
+      });
+    }
+  });
+};
+
+// Преобразуем 'arrows', 'space', 'enter', 'ctrl' и т.д. в конкретные keyCode
+Keyboard.prototype._actionToKeyCode = function (action) {
+  switch (action) {
+    case 'arrows':
+      // Допустим, одним тапом на D-Pad мы хотим ехать вверх
+      return Keyboard.Key.UP;
+    case 'space':
+      return Keyboard.Key.SPACE;
+    case 'enter':
+      return Keyboard.Key.START;
+    case 'ctrl':
+      return Keyboard.Key.SELECT;
+    default:
+      return null;
+  }
 };
 
 Keyboard.prototype.fireEvents = function () {

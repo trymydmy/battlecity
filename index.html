@@ -73,7 +73,6 @@
   <script type="text/javascript" src="src/MainMenuController.js"></script>
   <script type="text/javascript" src="src/MainMenuView.js"></script>
   <script type="text/javascript" src="src/MainMenuCursor.js"></script>
-  <script type="text/javascript" src="src/MainMenuCursorView.js"></script>
   <script type="text/javascript" src="src/Gamefield.js"></script>
   <script type="text/javascript" src="src/Level.js"></script>
   <script type="text/javascript" src="src/EnemyFactoryView.js"></script>
@@ -107,57 +106,69 @@
       font-family: prstart;
       src: url('../fonts/prstart.ttf');
     }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: black;
+      /* Запрещаем прокрутку */
+      overflow: hidden;
+      /* Запрещаем выделение текста и картинок */
+      user-select: none;          
+      -webkit-user-select: none;  
+      -ms-user-select: none;      
+    }
     body {
       font-family: prstart;
       font-size: 16px;
-      background-color: black;
-      margin-top: 30px;
     }
-    /* Центрируем блок, но даём ему max-width, чтобы он мог ужаться */
+    /* Основной контейнер, занимающий почти весь экран */
     #main {
+      width: 100%;
+      height: 90%; /* 100% - 10% */
       margin: 0 auto;
-      width: 512px; 
-      max-width: 90%;
       color: white;
+      position: relative;
     }
-    #help {
-      border-top: 4px solid white;
-      margin-top: 10px;
-      padding-top: 7px;
-    }
-    /* Центрируем таблицу */
-    #help table {
-      margin: 0 auto;
-    }
-    #help img {
-      vertical-align: middle;
-      /* Можно добавить, чтобы картинки тоже подстраивались */
-      max-width: 100%;
-      height: auto;
-    }
-    #help td {
-      padding-left: 1em;
-    }
-    /* Масштабируем канву пропорционально */
+    /* Сам канва масштабируем пропорционально */
     #main canvas {
       width: 100%;
       height: auto;
       display: block;
     }
+
+    /* Контейнер для управления, фиксирован внизу */
+    #controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-evenly; /* Можно space-between, кому как удобней */
+      align-items: center;
+    }
+
+    #left-controls, #center-controls, #right-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      /* При желании добавить отступы */
+      margin: 0 10px;
+    }
+
+    /* Можно добавить стили к самим кнопкам, чтобы они не растягивались */
     .touch-button {
-    display: inline-block;
-    touch-action: none;
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-    cursor: pointer;
-}
+      max-width: 80px; /* или любой другой размер */
+      height: auto;
+      cursor: pointer;
+      /* чтобы на тач-устройствах подсветки не было */
+      -webkit-tap-highlight-color: transparent;
+    }
   </style>
 
   <script type="text/javascript">
     $(function () {
       var FPS = 50;
-      
       var CANVAS_ID = 'canvas';
       var ctx = createCanvasContext();
       ctx.font = "16px prstart";
@@ -181,7 +192,7 @@
         return canvas.getContext('2d');
       }
 
-      // Пример: Можно вешать тач-события на «touch-button»
+      // Тач-события на кнопки
       $(document).on('touchstart mousedown pointerdown', '.touch-button', function(e) {
         e.preventDefault();
         var action = $(this).data('action');
@@ -197,40 +208,28 @@
 </head>
 <body>
   <div id="main">
-    <div id="help">
-      <p>CONTROLS:</p>
-      <table>
-        <tr>
-          <td>
-            <img src="images/Nintendo-Dpad-Neutral.png" alt="" 
-                 class="touch-button" data-action="arrows" />
-          </td>
-          <td>ARROWS</td>
-        </tr>
-        <tr>
-          <td>
-            <img src="images/Nintendo-Button-A.png" alt="" 
-                 class="touch-button" data-action="space" />
-            <img src="images/Nintendo-Button-B.png" alt="" 
-                 class="touch-button" data-action="space" />
-          </td>
-          <td>SPACE</td>
-        </tr>
-        <tr>
-          <td>
-            <img src="images/Nintendo-Button-Start.png" alt="" 
-                 class="touch-button" data-action="enter" />
-          </td>
-          <td>ENTER</td>
-        </tr>
-        <tr>
-          <td>
-            <img src="images/Nintendo-Button-Select.png" alt="" 
-                 class="touch-button" data-action="ctrl" />
-          </td>
-          <td>CTRL</td>
-        </tr>
-      </table>
+    <!-- Здесь будет canvas -->
+  </div>
+
+  <!-- Блок управления, внизу экрана -->
+  <div id="controls">
+    <div id="left-controls">
+      <img src="images/Nintendo-Dpad-Neutral.png"
+           alt="" class="touch-button" data-action="arrows" />
+    </div>
+
+    <div id="center-controls">
+      <img src="images/Nintendo-Button-Start.png"
+           alt="" class="touch-button" data-action="enter" />
+      <img src="images/Nintendo-Button-Select.png"
+           alt="" class="touch-button" data-action="ctrl" />
+    </div>
+
+    <div id="right-controls">
+      <img src="images/Nintendo-Button-A.png"
+           alt="" class="touch-button" data-action="space" />
+      <img src="images/Nintendo-Button-B.png"
+           alt="" class="touch-button" data-action="space" />
     </div>
   </div>
 </body>
